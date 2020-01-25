@@ -1,0 +1,120 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <LangVersion>7.3</LangVersion>
+        <RazorLangVersion>3.0</RazorLangVersion>
+    </PropertyGroup>
+
+    <PropertyGroup Label="PWA">
+        <!-- NOTE: Update this version to force new web assemblies to be installed -->
+        <ServiceWorkerCacheVersion>5</ServiceWorkerCacheVersion>
+        <ManifestShortName>ExpressionEditor2</ManifestShortName>
+        <ManifestLongName>Expression Editor 2 </ManifestLongName>
+        <ServiceWorkerForce>true</ServiceWorkerForce>
+        <ServiceWorkerRegisterInstallableType>installable-blazor</ServiceWorkerRegisterInstallableType>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <Compile Remove=".template.config\**" />
+        <Content Remove=".template.config\**" />
+        <EmbeddedResource Remove=".template.config\**" />
+        <None Remove=".template.config\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="template.vstemplate" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="wwwroot\css\open-iconic\FONT-LICENSE" />
+        <None Include="wwwroot\css\open-iconic\font\fonts\open-iconic.svg" />
+        <None Include="wwwroot\css\open-iconic\ICON-LICENSE" />
+        <None Include="wwwroot\css\open-iconic\README.md" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BlazorCssGrid" Version="1.0.0" />
+        <PackageReference Include="Blazorise" Version="0.8.8.1" />
+        <PackageReference Include="Blazorise.Bootstrap" Version="0.8.8.1" />
+        <PackageReference Include="Blazorise.Components" Version="0.8.8.1" />
+        <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.8.8.1" />
+        <PackageReference Include="BlazorPWA.MSBuild" Version="1.0.2">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Faso.Blazor.SpinKit" Version="1.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.0.0-preview9.19465.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.0.0-preview9.19465.2" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.AspNetCore.Blazor.DevServer" Version="3.0.0-preview9.19465.2" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.Bot.Expressions" Version="4.7.2-preview" />
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="wwwroot\css\open-iconic\FONT-LICENSE">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+      <Content Update="wwwroot\css\open-iconic\font\css\open-iconic-bootstrap.min.css">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+      <Content Update="wwwroot\css\open-iconic\font\fonts\open-iconic.eot">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+      <Content Update="wwwroot\css\open-iconic\font\fonts\open-iconic.otf">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+      <Content Update="wwwroot\css\open-iconic\font\fonts\open-iconic.svg">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+      <Content Update="wwwroot\css\open-iconic\font\fonts\open-iconic.ttf">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+      <Content Update="wwwroot\css\open-iconic\font\fonts\open-iconic.woff">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+      <Content Update="wwwroot\css\open-iconic\ICON-LICENSE">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+      <Content Update="wwwroot\css\open-iconic\README.md">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+      <Content Update="wwwroot\css\site.css">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+    </ItemGroup>
+
+    <Target Name="CopyMissingBlazorContent" BeforeTargets="BlazorCompleteStandalonePublish">
+        <PropertyGroup>
+            <FullPublishDir>$(PublishDir)</FullPublishDir>
+            <FullPublishDir Condition=" $(FullPublishDir.Contains(':')) != 'true' ">$(MSBuildThisFileDirectory)$(PublishDir)</FullPublishDir>
+        </PropertyGroup>
+
+        <Message Text="PublishIntermediateOutputPath: $(PublishIntermediateOutputPath)" Importance="high" />
+        <Message Text="OutDir: $(OutDir)" Importance="high" />
+        <Message Text="BlazorPublishDistDir: $(BlazorPublishDistDir)" Importance="High" />
+        <Message Text="PublishDir: $(PublishDir)" Importance="High" />
+        <Message Text="FullPublishDir: $(FullPublishDir)" Importance="High" />
+
+        <CreateItem Include="$(FullPublishDir)wwwroot\**\*.*">
+            <Output TaskParameter="Include" ItemName="FilesToCopy" />
+        </CreateItem>
+        <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(FullPublishDir)$(BlazorPublishDistDir)%(RecursiveDir)" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" Retries="3" RetryDelayMilliseconds="300" />
+        <RemoveDir Directories="$(FullPublishDir)wwwroot" />
+        <Delete Files="$(FullPublishDir)$(BlazorPublishDistDir)**\*.map" />
+    </Target>
+</Project>

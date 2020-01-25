@@ -1,0 +1,151 @@
+﻿@page "/"
+@inherits LayoutComponentBase
+@using BlazorCssGrid
+@using Blazorise
+@using Blazorise.Components
+@using Newtonsoft.Json
+@using Microsoft.Bot.Expressions;
+@using Microsoft.AspNetCore.Components.Web;
+
+
+<GridContainer Rows="auto 1fr" Columns="1fr 1fr"
+               style="font-family: 'Segoe UI', Tahoma, Helvetica, sans-serif">
+
+    <GridItem Row="1" Column="1" ColumnSpan="2" style="padding: 10px;">
+        <TextEdit Placeholder="Enter expression..." @bind-Text="Expression" Style="width:100%" />
+    </GridItem>
+
+    <GridItem Row="2" Column="1" style="padding: 10px;">
+        <MemoEdit @bind-Text="@Data" Style="height:100%;width:100%" />
+    </GridItem>
+
+    <GridItem Row="2" Column="2" style="padding:10px;">
+        <GridContainer Columns="100%" Rows="auto 1fr">
+            <GridItem Row="1">
+                <Alert Color="Color.Warning" @bind-IsShow="ShowAlert" Style="padding:10px;">
+                    <TextEdit IsPlaintext="true" @bind-Text="@Error" />
+                </Alert>
+            </GridItem>
+            <GridItem Row="2">
+                <MemoEdit Text="@Result" IsReadonly="true" Style="height:100%;width:100%" />
+            </GridItem>
+        </GridContainer>
+    </GridItem>
+
+</GridContainer>
+
+@functions {
+    private string error;
+    public string Error
+    {
+        get
+        {
+            return error;
+        }
+        set
+        {
+            error = value;
+        }
+    }
+
+    private bool ShowAlert { get { return !String.IsNullOrEmpty(this.Error); } set { } }
+    private Alert alert;
+
+    private object dataObj;
+    private string data;
+    public string Data
+    {
+        get
+        {
+            return data;
+        }
+        set
+        {
+            try
+            {
+                dataObj = JsonConvert.DeserializeObject(value);
+                data = JsonConvert.SerializeObject(dataObj, Formatting.Indented);
+            }
+            catch (Exception)
+            {
+                dataObj = new object();
+                data = value;
+            }
+            OnChanged();
+        }
+    }
+
+    private Expression exp;
+    private string expression;
+    public string Expression
+    {
+        get
+        {
+            return expression;
+        }
+        set
+        {
+            expression = value;
+            exp = null;
+            try
+            {
+                exp = engine.Parse(value);
+                Error = null;
+            }
+            catch (Exception err)
+            {
+                Error = err.Message;
+            }
+            OnChanged();
+        }
+    }
+
+    public string Result { get; set; }
+
+    private ExpressionEngine engine = new ExpressionEngine();
+
+
+    protected override void OnInitialized()
+    {
+        Data = @"{
+'conversation':
+{
+'firstName': 'John',
+'lastName' : 'doe',
+'age'      : 26,
+'address'  : {
+'streetAddress': 'naist street',
+'city'         : 'Nara',
+'postalCode'   : '630-0192'
+},
+'phoneNumbers': [
+{
+'type'  : 'iPhone',
+'number': '0123-4567-8888'
+},
+{
+'type'  : 'home',
+'number': '0123-4567-8910'
+}
+]
+}
+}";
+    }
+
+    void OnChanged()
+    {
+        this.Result = string.Empty;
+        if (this.exp != null && this.dataObj != null)
+        {
+            var (result, error) = this.exp.TryEvaluate(dataObj);
+            if (error != null)
+            {
+                this.Result = error;
+            }
+            else
+            {
+                this.Result = JsonConvert.SerializeObject(result, Formatting.Indented);
+            }
+        }
+    }
+}
