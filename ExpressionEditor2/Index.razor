@@ -5,36 +5,67 @@
 @using Blazorise.Components
 @using Newtonsoft.Json
 @using Microsoft.Bot.Expressions;
-@using Microsoft.AspNetCore.Components.Web;
+@using Microsoft.AspNetCore.Components.Web
+@using BlazorStyled
 
+<!-- layout -->
+<div class="@cssContainer" style="display:grid;">
+    <TextEdit class="@cssExpression" Placeholder="Enter expression..." @bind-Text="Expression" />
 
-<GridContainer Rows="auto 1fr" Columns="1fr 1fr"
-               style="font-family: 'Segoe UI', Tahoma, Helvetica, sans-serif">
+    <MemoEdit class="@cssData" @bind-Text="@Data" />
 
-    <GridItem Row="1" Column="1" ColumnSpan="2" style="padding: 10px;">
-        <TextEdit Placeholder="Enter expression..." @bind-Text="Expression" Style="width:100%" />
-    </GridItem>
+    <div class="@cssResultPane">
+        <Alert Class="@cssAlert" Color="Color.Warning" @bind-IsShow="ShowAlert">
+            <TextEdit IsPlaintext="true" @bind-Text="@Error" />
+        </Alert>
 
-    <GridItem Row="2" Column="1" style="padding: 10px;">
-        <MemoEdit @bind-Text="@Data" Style="height:100%;width:100%" />
-    </GridItem>
+        <MemoEdit Class="@cssResult" Text="@Result" IsReadonly="true" />
+    </div>
+</div>
 
-    <GridItem Row="2" Column="2" style="padding:10px;">
-        <GridContainer Columns="100%" Rows="auto 1fr">
-            <GridItem Row="1">
-                <Alert Color="Color.Warning" @bind-IsShow="ShowAlert" Style="padding:10px;">
-                    <TextEdit IsPlaintext="true" @bind-Text="@Error" />
-                </Alert>
-            </GridItem>
-            <GridItem Row="2">
-                <MemoEdit Text="@Result" IsReadonly="true" Style="height:100%;width:100%" />
-            </GridItem>
-        </GridContainer>
-    </GridItem>
+<!-- styles-->
+<Styled @bind-Classname="@cssContainer">
+    <GridContainer Rows="auto 1fr" RowGap="10px"
+                   Columns="1fr 1fr" ColumnGap="10px" />
+    width:100%;
+    height:100%;
+    font-family: 'Segoe UI', Tahoma, Helvetica, sans-serif;
+    padding:10px;
+</Styled>
 
-</GridContainer>
+<Styled @bind-Classname="@cssExpression">
+    <GridItem Column="1" ColumnSpan="2" />
+    padding: 10px;
+</Styled>
+
+<Styled @bind-Classname="@cssData">
+    <GridItem Row="2" />
+    padding: 10px;
+</Styled>
+
+<Styled @bind-Classname="@cssResultPane">
+    <GridItem Row="2" Column="2" />
+    <GridContainer Rows="auto 1fr"
+                   Columns="100%" />
+</Styled>
+
+<Styled @bind-Classname="@cssAlert">
+    <GridItem Row="1" />
+    padding: 10px;
+</Styled>
+
+<Styled @bind-Classname="@cssResult">
+    <GridItem Row="2" />
+</Styled>
 
 @functions {
+    private string cssContainer;
+    private string cssExpression;
+    private string cssData;
+    private string cssResultPane;
+    private string cssAlert;
+    private string cssResult;
+
     private string error;
     public string Error
     {

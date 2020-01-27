@@ -8,7 +8,7 @@
 
     <PropertyGroup Label="PWA">
         <!-- NOTE: Update this version to force new web assemblies to be installed -->
-        <ServiceWorkerCacheVersion>5</ServiceWorkerCacheVersion>
+        <ServiceWorkerCacheVersion>6</ServiceWorkerCacheVersion>
         <ManifestShortName>ExpressionEditor2</ManifestShortName>
         <ManifestLongName>Expression Editor 2 </ManifestLongName>
         <ServiceWorkerForce>true</ServiceWorkerForce>
@@ -38,7 +38,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="BlazorCssGrid" Version="1.0.0" />
+        <PackageReference Include="BlazorCssGrid" Version="1.1.0" />
         <PackageReference Include="Blazorise" Version="0.8.8.1" />
         <PackageReference Include="Blazorise.Bootstrap" Version="0.8.8.1" />
         <PackageReference Include="Blazorise.Components" Version="0.8.8.1" />
@@ -47,6 +47,7 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="BlazorStyled" Version="1.1.0" />
         <PackageReference Include="Faso.Blazor.SpinKit" Version="1.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.0.0-preview9.19465.2" />
         <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.0.0-preview9.19465.2" PrivateAssets="all" />

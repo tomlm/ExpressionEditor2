@@ -1,6 +1,7 @@
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
+using BlazorStyled;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,7 +14,8 @@ namespace ExpressionEditor2
             serviceCollection
             .AddBlazorise()
             .AddBootstrapProviders()
-            .AddFontAwesomeIcons();
+            .AddFontAwesomeIcons()
+            .AddBlazorStyled(); 
         }
 
         public void Configure(IComponentsApplicationBuilder componentsApplicationBuilder)
@@ -23,6 +25,7 @@ namespace ExpressionEditor2
                 .UseFontAwesomeIcons();
 
             componentsApplicationBuilder.AddComponent<MyApp>("myApp");
+            componentsApplicationBuilder.AddComponent<ClientSideStyled>("#styled");
         }
     }
 }

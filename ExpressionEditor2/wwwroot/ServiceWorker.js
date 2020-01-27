@@ -5,7 +5,7 @@ const swInstallEvent = 'install';
 const swInstalledEvent = 'installed';
 const swActivateEvent = 'activate';
 const staticCachePrefix = 'blazor-cache-v';
-const staticCacheName = 'blazor-cache-v5';
+const staticCacheName = 'blazor-cache-v6';
 const requiredFiles = [
 "/_framework/blazor.boot.json",
 "/_framework/blazor.server.js",
@@ -18,7 +18,9 @@ const requiredFiles = [
 "/_framework/_bin/Blazorise.Components.dll",
 "/_framework/_bin/Blazorise.dll",
 "/_framework/_bin/Blazorise.Icons.FontAwesome.dll",
+"/_framework/_bin/BlazorStyled.dll",
 "/_framework/_bin/ExpressionEditor2.dll",
+"/_framework/_bin/ExpressionEditor2.pdb",
 "/_framework/_bin/Faso.Blazor.SpinKit.dll",
 "/_framework/_bin/Microsoft.AspNetCore.Authorization.dll",
 "/_framework/_bin/Microsoft.AspNetCore.Blazor.dll",
@@ -28,6 +30,7 @@ const requiredFiles = [
 "/_framework/_bin/Microsoft.AspNetCore.Metadata.dll",
 "/_framework/_bin/Microsoft.Bcl.AsyncInterfaces.dll",
 "/_framework/_bin/Microsoft.Bot.Expressions.dll",
+"/_framework/_bin/Microsoft.Bot.Expressions.pdb",
 "/_framework/_bin/Microsoft.CSharp.dll",
 "/_framework/_bin/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
 "/_framework/_bin/Microsoft.Extensions.DependencyInjection.dll",
