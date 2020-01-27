@@ -9,62 +9,57 @@
 @using BlazorStyled
 
 <!-- layout -->
-<div class="@cssContainer" style="display:grid;">
-    <TextEdit class="@cssExpression" Placeholder="Enter expression..." @bind-Text="Expression" />
+<div class="@grid">
+    <TextEdit class="grid-expression" Placeholder="Enter expression..." @bind-Text="Expression" />
 
-    <MemoEdit class="@cssData" @bind-Text="@Data" />
+    <MemoEdit class="grid-data" @bind-Text="@Data" />
 
-    <div class="@cssResultPane">
-        <Alert Class="@cssAlert" Color="Color.Warning" @bind-IsShow="ShowAlert">
+    <div class="grid-resultPane">
+        <Alert Class="grid-alert" Color="Color.Warning" @bind-IsShow="ShowAlert">
             <TextEdit IsPlaintext="true" @bind-Text="@Error" />
         </Alert>
 
-        <MemoEdit Class="@cssResult" Text="@Result" IsReadonly="true" />
+        <MemoEdit Class="grid-result" Text="@Result" IsReadonly="true" />
     </div>
 </div>
 
 <!-- styles-->
-<Styled @bind-Classname="@cssContainer">
+<Styled @bind-Classname="@grid">
     <GridContainer Rows="auto 1fr" RowGap="10px"
                    Columns="1fr 1fr" ColumnGap="10px" />
     width:100%;
     height:100%;
     font-family: 'Segoe UI', Tahoma, Helvetica, sans-serif;
     padding:10px;
-</Styled>
 
-<Styled @bind-Classname="@cssExpression">
-    <GridItem Column="1" ColumnSpan="2" />
-    padding: 10px;
-</Styled>
+    & grid-expression {
+        <GridItem Column="1" ColumnSpan="2" />
+        padding: 10px;
+    }
 
-<Styled @bind-Classname="@cssData">
-    <GridItem Row="2" />
-    padding: 10px;
-</Styled>
+    & grid-data {
+        <GridItem Row="2" />
+        padding: 10px;
+    }
 
-<Styled @bind-Classname="@cssResultPane">
-    <GridItem Row="2" Column="2" />
-    <GridContainer Rows="auto 1fr"
-                   Columns="100%" />
-</Styled>
+    & grid-resultPane {
+        <GridItem Row="2" Column="2" />
+        <GridContainer Rows="auto 1fr"
+                    Columns="100%" />
+    }
 
-<Styled @bind-Classname="@cssAlert">
-    <GridItem Row="1" />
-    padding: 10px;
-</Styled>
+    & grid-alert {
+        <GridItem Row="1" />
+        padding: 10px;
+    }
 
-<Styled @bind-Classname="@cssResult">
-    <GridItem Row="2" />
+    & grid-result {
+        <GridItem Row="2" />
+    }
 </Styled>
 
 @functions {
-    private string cssContainer;
-    private string cssExpression;
-    private string cssData;
-    private string cssResultPane;
-    private string cssAlert;
-    private string cssResult;
+    private string grid;
 
     private string error;
     public string Error
@@ -80,7 +75,6 @@
     }
 
     private bool ShowAlert { get { return !String.IsNullOrEmpty(this.Error); } set { } }
-    private Alert alert;
 
     private object dataObj;
     private string data;
