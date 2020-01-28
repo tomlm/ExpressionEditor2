@@ -8,7 +8,7 @@
 
     <PropertyGroup Label="PWA">
         <!-- NOTE: Update this version to force new web assemblies to be installed -->
-        <ServiceWorkerCacheVersion>7</ServiceWorkerCacheVersion>
+        <ServiceWorkerCacheVersion>9</ServiceWorkerCacheVersion>
         <ManifestShortName>ExpressionEditor2</ManifestShortName>
         <ManifestLongName>Expression Editor 2 </ManifestLongName>
         <ServiceWorkerForce>true</ServiceWorkerForce>

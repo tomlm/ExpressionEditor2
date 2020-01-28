@@ -12,48 +12,219 @@
 @using Blazaco.Editor.Options
 
 <!-- layout -->
-    <div class="@grid">
-        <TextEdit class="grid-expression" Placeholder="Enter expression..." @bind-Text="Expression" />
+<div class="@grid">
+    <TextEdit class="grid-expression" Placeholder="Enter expression..." @bind-Text="Expression" />
 
-        <MonacoEditor @ref="_editor" Model="_editorModel" class="grid-data" />
+    <MonacoEditor @ref="_editor" Model="_editorModel" class="grid-data" />
 
-        <Alert Class="grid-alert" Color="Color.Warning" @bind-IsShow="ShowAlert">
-            <TextEdit IsPlaintext="true" @bind-Text="@Error" />
-        </Alert>
+    <Text Class="grid-dataHeading">Sample Data</Text>
 
-        <MonacoEditor @ref="_editorResult" Model="_editorResultModel" class="grid-result" />
+    <Alert Class="grid-alert" Color="Color.Warning" @bind-IsShow="ShowAlert">
+        <TextEdit IsPlaintext="true" @bind-Text="@Error" />
+    </Alert>
+
+    <Text Class="grid-resultHeading">Expression Result</Text>
+
+    <MonacoEditor @ref="_editorResult" Model="_editorResultModel" class="grid-result" />
+
+    <div class="grid-sidebar">
+        <Label Class="grid-sidebarHeading">Math</Label>
+        <ul>
+            <li>min(value1, value2)</li>
+            <li>max(value1, value2)</li>
+            <li>average(array)</li>
+            <li>sum(array)</li>
+            <li>range(array, count)</li>
+        </ul>
+
+        <label Class="grid-sidebarHeading">Comparisons</label>
+        <ul>
+            <li>exists(property)</li>
+        </ul>
+
+        <label Class="grid-sidebarHeading">String</label>
+        <ul>
+            <li>length(string)</li>
+            <li>replace(new, old)</li>
+            <li>replaceIgnoreCase(new, old)</li>
+            <li>split(string, splitCharsAsString)</li>
+            <li>substring(string, start, length)</li>
+            <li>toLower(string)</li>
+            <li>toUpper(string)</li>
+            <li>trim(string)</li>
+            <li>endsWith(string, val)</li>
+            <li>startsWith(string, val)</li>
+            <li>countWord(string)</li>
+            <li>addOrdinal(string)</li>
+            <li>newGuid()</li>
+            <li>indexOf(stringOrArray, string)</li>
+            <li>lastIndexOf(string, string)</li>
+        </ul>
+
+        <label Class="grid-sidebarHeading">Collection</label>
+        <ul>
+            <li>count(array)</li>
+            <li>contains(array, value)</li>
+            <li>empty(array)</li>
+            <li>join(array, array)</li>
+            <li>first(array)</li>
+            <li>last(array)</li>
+            <li>foreach(array, itemName, selectExpression)</li>
+            <li>select(array, itemName, selectExpression)</li>
+            <li>where(array, itemName, filterExpression)</li>
+            <li>union(array, array)</li>
+            <li>intersection(array, array)</li>
+            <li>skip(array, number)</li>
+            <li>take(array, number)</li>
+            <li>subArray(array, start, end)</li>
+            <li>sortBy(array, propertyName)</li>
+            <li>sortByDescending(array, propertyName)</li>
+            <li>indicesAndValues(array)</li>
+        </ul>
+
+        <label Class="grid-sidebarHeading">DateTime</label>
+        <ul>
+            <li>addDays(date, days)</li>
+            <li>addHours(date, hours)</li>
+            <li>addMinutes(date, minutes)</li>
+            <li>addSeconds(date, seconds)</li>
+            <li>dayOfMonth(date)</li>
+            <li>dayOfWeek(date)</li>
+            <li>dayOfYear(date)</li>
+            <li>month(date)</li>
+            <li>date(date)</li>
+            <li>year(date)</li>
+            <li>utcNow()</li>
+            <li>formatDateTime(date, format)</li>
+            <li>subtractFromTime(date, timespan)</li>
+            <li>dateReadBack(date1, date2)</li>
+            <li>getTimeOfDay(date)</li>
+            <li>getFutureTime(date, format)</li>
+            <li>getPastTime(date, format)</li>
+            <li>convertFromUTC(date, format)</li>
+            <li>convertToUTC(date, format)</li>
+            <li>addToTime(time, interval, timeUnit, format)</li>
+            <li>startOfDay(time, format)</li>
+            <li>startOfHour(time, format)</li>
+            <li>startOfMonth(date, format)</li>
+            <li>ticks(date)</li>
+        </ul>
+
+        <label Class="grid-sidebarHeading">Conversions</label>
+        <ul>
+            <li>float(property)</li>
+            <li>int(property)</li>
+            <li>string(property)</li>
+            <li>bool(property)</li>
+            <li>array(property)</li>
+            <li>binary(property)</li>
+            <li>base64(property</li>
+            <li>base64ToBinary(property)</li>
+            <li>base64ToString(property)</li>
+            <li>dataUri(property)</li>
+            <li>dataUriToBinary(property)</li>
+            <li>dataUriToString(property)</li>
+            <li>uriComponent(property)</li>
+            <li>uriComponentToString(property)</li>
+            <li>xml(property)</li>
+            <li>json(property)</li>
+        </ul>
+
+        <label Class="grid-sidebarHeading">URI Parsing Functions</label>
+        <ul>
+            <li>uriHost(property)</li>
+            <li>uriPath(property)</li>
+            <li>uriPathAndQuery(property)</li>
+            <li>uriPort(property)</li>
+            <li>uriQuery(property)</li>
+            <li>uriScheme(property)</li>
+        </ul>
+
+
+        <label Class="grid-sidebarHeading">Misc</label>
+        <ul>
+            <li>Constant</li>
+            <li>Lambda</li>
+            <li>if</li>
+            <li>rand</li>
+        </ul>
+
+        <label Class="grid-sidebarHeading">Object manipulation</label>
+        <ul>
+            <li>coalesce</li>
+            <li>xPath(property, xPathString)</li>
+            <li>setPathToValue(property, value)</li>
+            <li>jPath(property, jPathString)</li>
+        </ul>
+
+        <label Class="grid-sidebarHeading">Regular expression</label>
+        <ul>
+            <li>isMatch(property, regularExpression)</li>
+        </ul>
     </div>
+</div>
 
 <!-- styles-->
 <Styled @bind-Classname="@grid">
-    <GridContainer Rows="auto auto 1fr" RowGap="10px"
-                   Columns="1fr 1fr" ColumnGap="10px" />
+    <GridContainer Rows="auto auto auto 1fr" RowGap="2px"
+                   Columns="auto 1fr 1fr" ColumnGap="10px" />
     width:100%;
     height:100%;
     font-family: 'Segoe UI', Tahoma, Helvetica, sans-serif;
     padding:10px;
 
     & .grid-expression {
-        <GridItem Row="1" Column="1" ColumnSpan="2" />
-       padding: 10px;
+    <GridItem Row="1" Column="2" ColumnSpan="2" />
+    padding: 10px;
     }
 
+    & .grid-sidebar {
+    <GridItem Row="1" RowSpan="4" Column="1" VerticalScrollbar="auto" />
+    padding: 2px;
+    background-color: lightgray;
+    font-size: 11px;
+    padding-left:10px;
+    }
+
+    .grid-sidebarHeading {
+    font-size: 14px;
+    font-weight: bold;
+    }
+
+    sidebarHeading
     & .grid-alert {
-        <GridItem Row="2" Column="1" ColumnSpan="2" />
-        padding: 10px;
+    <GridItem Row="2" Column="2" ColumnSpan="2" />
+    padding: 2px;
+    font-size: 14px;
     }
 
+    & .grid-dataHeading {
+    <GridItem Row="3" Column="2" />
+    font-size:12px;
+    font-size:12px;
+    font-weight:bold;
+    color:gray;
+    padding: 2px;
+    }
+
+    & .grid-resultHeading {
+    <GridItem Row="3" Column="3" />
+    font-size:12px;
+    font-weight:bold;
+    color:gray;
+    padding: 2px;
+    }
 
     & .grid-data {
-        <GridItem Row="3" Column="1"/>
-        height:100%;
-        width:100%;
+    <GridItem Row="4" Column="2" />
+    height:100%;
+    width:100%;
     }
 
     & .grid-result {
-        <GridItem Row="3" Column="2"/>
-        font-family: monospace, monospace;
-        font-size: 14px;
+    <GridItem Row="4" Column="3" />
+    font-family: monospace, monospace;
+    font-size: 14px;
     }
 </Styled>
 
@@ -67,43 +238,9 @@
     private MonacoEditor _editorResult;
 
     private string error;
-    public string Error
-    {
-        get
-        {
-            return error;
-        }
-        set
-        {
-            error = value;
-        }
-    }
+    public string Error { get { return error; } set { error = value; } }
 
     private bool ShowAlert { get { return !String.IsNullOrEmpty(this.Error); } set { } }
-
-    private object dataObj;
-    private string data;
-    public string Data
-    {
-        get
-        {
-            return data;
-        }
-        set
-        {
-            try
-            {
-                dataObj = JsonConvert.DeserializeObject(value);
-                data = JsonConvert.SerializeObject(dataObj, Formatting.Indented);
-            }
-            catch (Exception)
-            {
-                dataObj = new object();
-                data = value;
-            }
-            OnChanged();
-        }
-    }
 
     private Expression exp;
     private string expression;
@@ -126,77 +263,60 @@
             {
                 Error = err.Message;
             }
-            OnChanged();
+
+            OnChanged().ContinueWith(x => x.IsFaulted);
         }
     }
 
-    public string Result { get; set; }
-
     private ExpressionEngine engine = new ExpressionEngine();
-
 
     protected override void OnInitialized()
     {
-        Data = @"{
-'conversation':
-{
-'firstName': 'John',
-'lastName' : 'doe',
-'age'      : 26,
-'address'  : {
-'streetAddress': 'naist street',
-'city'         : 'Nara',
-'postalCode'   : '630-0192'
-},
-'phoneNumbers': [
-{
-'type'  : 'iPhone',
-'number': '0123-4567-8888'
-},
-{
-'type'  : 'home',
-'number': '0123-4567-8910'
-}
-]
-}
-}";
-        var options = new EditorOptions()
+        var data = @"{'conversation':{'firstName': 'John','lastName' : 'doe','age': 26,'address': {'streetAddress': 'naist street','city': 'Nara','postalCode': '630-0192'},'phoneNumbers': [{'type'  : 'iPhone','number': '0123-4567-8888'},{'type'  : 'home','number': '0123-4567-8910'}]}}";
+
+        _editorModel = new EditorModel(new EditorOptions()
         {
-            Value = JsonConvert.SerializeObject(JsonConvert.DeserializeObject(Data), Formatting.Indented),
+            Value = JsonConvert.SerializeObject(JsonConvert.DeserializeObject(data), Formatting.Indented),
             Language = "json",
             Theme = "vs-dark",
             AutomaticLayout = true
-        };
+        });
 
-        _editorModel = new EditorModel(options);
-
-        options = new EditorOptions()
+        _editorResultModel = new EditorModel(new EditorOptions()
         {
             Value = " ",
             Language = "json",
             Theme = "vs-dark",
             AutomaticLayout = true,
             ReadOnly = true
-        };
-
-        _editorResultModel = new EditorModel(options);
+        });
     }
 
-    void OnChanged()
+    async Task OnChanged()
     {
-        this.Result = string.Empty;
-        if (this.exp != null && this.dataObj != null)
+        var data = await _editor.GetValue();
+        var dataObj = JsonConvert.DeserializeObject(data);
+
+        // format data window
+        var dataClean = JsonConvert.SerializeObject(dataObj, Formatting.Indented);
+        if (String.Compare(data, dataClean) != 0)
+        {
+            await _editor.SetValue(dataClean);
+        }
+
+        if (this.exp != null)
         {
             var (result, error) = this.exp.TryEvaluate(dataObj);
             if (error != null)
             {
                 this.Error = error;
+                await _editorResult.SetValue(" ");
             }
             else
             {
                 this.Error = null;
-                this.Result = JsonConvert.SerializeObject(result, Formatting.Indented);
-                _editorResult.SetValue(this.Result);
+                var resultJson = JsonConvert.SerializeObject(result, Formatting.Indented);
+                await _editorResult.SetValue(resultJson);
             }
         }
     }
