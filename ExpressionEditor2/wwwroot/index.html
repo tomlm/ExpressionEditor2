@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
     <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
     <link href="_content/Blazorise.Bootstrap/blazorise.bootstrap.css" rel="stylesheet" />
+    <link rel="stylesheet" data-name="vs/editor/editor.main" href="lib/monaco-editor/min/vs/editor/editor.main.css">
     <link href="css/site.css" rel="stylesheet" />
     <style id="styled"></style>
     <script src="ServiceWorkerRegister.js"></script>
@@ -25,6 +26,14 @@
 
     <script src="_content/Blazorise/blazorise.js"></script>
     <script src="_content/Blazorise.Bootstrap/blazorise.bootstrap.js"></script>
+
+    <!--- monaco -->
+    <script>var require = { paths: { 'vs': 'lib/monaco-editor/min/vs' } };</script>
+    <script src="lib/monaco-editor/min/vs/loader.js"></script>
+    <script src="lib/monaco-editor/min/vs/editor/editor.main.nls.js"></script>
+    <script src="lib/monaco-editor/min/vs/editor/editor.main.js"></script>
+    <script type="blazor-boot">
+    </script>
 
     <script src="_framework/blazor.webassembly.js"></script>
 </body>
