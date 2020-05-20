@@ -4,7 +4,7 @@
 @using Blazorise
 @using Blazorise.Components
 @using Newtonsoft.Json
-@using Microsoft.Bot.Expressions;
+@using AdaptiveExpressions;
 @using Microsoft.AspNetCore.Components.Web
 @using BlazorStyled
 @using Blazaco
@@ -161,6 +161,92 @@
         <ul>
             <li>isMatch(property, regularExpression)</li>
         </ul>
+
+        <label Class="grid-sidebarHeading">Humanize</label>
+        <ul>
+            <li>humanizer.humanizeDateTime(date,  ?culture)</li>
+            <li>humanizer.humanizeDateTime(date, relDate, ?culture)</li>
+            <li>humanizer.humanizeTimeSpan(span, ?culture)</li>
+            <li>humanizer.humanizeTimeSpan(span, GrammaticalCase,?culture)</li>
+            <li>humanizer.dateTimeToOrdinalWords(date, ?culture)</li>
+            <li>humanizer.dateTimeToOrdinalWords(date, ?GrammaticalCase, ?culture)</li>
+            <li>humanizer.pluralize(text, ?isKnownToBeSinglar)</li>
+            <li>humanizer.singularlize(text, ?isKnownToBePlural)</li>
+            <li>humanizer.toQuantity(name, quantity, ?style)</li>
+            <li>humanizer.toQuantity(name, quantity, ?style)</li>
+            <li>humanizer.toQuantity(name, quantity, ?style)</li>
+        </ul>
+
+        <label Class="grid-sidebarHeading">Format functions</label>
+        <ul>
+            <li>dotnet.numberToString(format,?culture)</li>
+            <li>dotnet.intToString(format,?culture)</li>
+            <li>dotnet.dateTimeToString(format,?culture)</li>
+            <li>dotnet.timeSpanToString(format,?culture)</li>
+        </ul>
+
+
+        <label Class="grid-sidebarHeading">Text transforms</label>
+        <ul>
+            <li>humanizer.truncate(text, chars, truncation)</li>
+            <li>humanizer.truncateWords(text, words, truncation)</li>
+            <li>humanizer.camelize(text)</li>
+            <li>humanizer.dashorize(text)</li>
+            <li>humanizer.hyphenate(text)</li>
+            <li>humanizer.kebaberize(text)</li>
+            <li>humanizer.pascalize(text)</li>
+            <li>humanizer.titleize(text)</li>
+        </ul>
+
+        <label Class="grid-sidebarHeading">Number functions</label>
+        <ul>
+            <li>humanizer.number2metric(text)</li>
+            <li>humanizer.metric2number(text, ?hasSpace, ?decimals)</li>
+            <li>humanizer.number2words(number, ?culture)</li>
+            <li>humanizer.number2words(number, ?gender, ?culture)</li>
+            <li>humanizer.number2ordinalWords(number, ?culture)</li>
+            <li>humanizer.number2ordinalWords(number, ?gender, ?culture)</li>
+            <li>humanizer.number2ordinal(number)</li>
+            <li>humanizer.number2ordinal(number, ?gender)</li>
+            <li>humanizer.fromRoman(text)</li>
+            <li>humanizer.toRoman(number)</li>
+        </ul>
+
+        <label Class="grid-sidebarHeading">Text Capitalization</label>
+        <ul>
+            <li>humanizer.allCaps(text)</li>
+            <li>humanizer.lowerCase(text)</li>
+            <li>humanizer.sentence(text)</li>
+            <li>humanizer.title(text)</li>
+        </ul>
+
+
+        <label Class="grid-sidebarHeading">TimeSpan</label>
+        <ul>
+            <li>humanizer.weeks(number)</li>
+            <li>humanizer.days(number)</li>
+            <li>humanizer.hours(number)</li>
+            <li>humanizer.minutes(number)</li>
+            <li>humanizer.seconds(number)</li>
+            <li>humanizer.milliseconds(number)</li>
+        </ul>
+
+        <label Class="grid-sidebarHeading">Bytes</label>
+        <ul>
+            <li>humanizer.bits(number)</li>
+            <li>humanizer.bytes(number)</li>
+            <li>humanizer.kilobytes(number)</li>
+            <li>humanizer.megabytes(number)</li>
+            <li>humanizer.gigabytes(number)</li>
+            <li>humanizer.terabytes(number)</li>
+        </ul>
+
+        <label Class="grid-sidebarHeading">Headings</label>
+        <ul>
+            <li>humanizer.degress2heading(number, ?culture)</li>
+            <li>humanizer.degress2heading(number, headingstyle, ?culture)</li>
+            <li>humanizer.heading2degrees(heading())</li>
+        </ul>
     </div>
 </div>
 
@@ -256,7 +342,7 @@
             exp = null;
             try
             {
-                exp = engine.Parse(value);
+                exp = AdaptiveExpressions.Expression.Parse(value);
                 Error = null;
             }
             catch (Exception err)
@@ -267,8 +353,6 @@
             OnChanged().ContinueWith(x => x.IsFaulted);
         }
     }
-
-    private ExpressionEngine engine = new ExpressionEngine();
 
     protected override void OnInitialized()
     {

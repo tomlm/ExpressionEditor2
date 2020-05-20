@@ -5,13 +5,14 @@ const swInstallEvent = 'install';
 const swInstalledEvent = 'installed';
 const swActivateEvent = 'activate';
 const staticCachePrefix = 'blazor-cache-v';
-const staticCacheName = 'blazor-cache-v10';
+const staticCacheName = 'blazor-cache-v12';
 const requiredFiles = [
 "/_framework/blazor.boot.json",
 "/_framework/blazor.server.js",
 "/_framework/blazor.webassembly.js",
 "/_framework/wasm/mono.js",
 "/_framework/wasm/mono.wasm",
+"/_framework/_bin/AdaptiveExpressions.dll",
 "/_framework/_bin/Antlr4.Runtime.dll",
 "/_framework/_bin/Blazaco.dll",
 "/_framework/_bin/BlazorCssGrid.dll",
@@ -21,7 +22,11 @@ const requiredFiles = [
 "/_framework/_bin/Blazorise.Icons.FontAwesome.dll",
 "/_framework/_bin/BlazorStyled.dll",
 "/_framework/_bin/ExpressionEditor2.dll",
+"/_framework/_bin/ExpressionEditor2.pdb",
 "/_framework/_bin/Faso.Blazor.SpinKit.dll",
+"/_framework/_bin/Humanizer.dll",
+"/_framework/_bin/Humanizer.resources.dll",
+"/_framework/_bin/Iciclecreek.AdaptiveExpressions.Humanizer.dll",
 "/_framework/_bin/Microsoft.AspNetCore.Authorization.dll",
 "/_framework/_bin/Microsoft.AspNetCore.Blazor.dll",
 "/_framework/_bin/Microsoft.AspNetCore.Components.dll",
@@ -29,7 +34,6 @@ const requiredFiles = [
 "/_framework/_bin/Microsoft.AspNetCore.Components.Web.dll",
 "/_framework/_bin/Microsoft.AspNetCore.Metadata.dll",
 "/_framework/_bin/Microsoft.Bcl.AsyncInterfaces.dll",
-"/_framework/_bin/Microsoft.Bot.Expressions.dll",
 "/_framework/_bin/Microsoft.CSharp.dll",
 "/_framework/_bin/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
 "/_framework/_bin/Microsoft.Extensions.DependencyInjection.dll",
