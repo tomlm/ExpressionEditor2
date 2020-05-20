@@ -7,15 +7,14 @@
 @using AdaptiveExpressions;
 @using Microsoft.AspNetCore.Components.Web
 @using BlazorStyled
-@using Blazaco
-@using Blazaco.Editor
-@using Blazaco.Editor.Options
+@using BlazorMonaco
+@using BlazorMonaco.Bridge
 
 <!-- layout -->
 <div class="@grid">
     <TextEdit class="grid-expression" Placeholder="Enter expression..." @bind-Text="Expression" />
 
-    <MonacoEditor @ref="_editor" Model="_editorModel" class="grid-data" />
+    <MonacoEditor @ref="_data" Id="data" ConstructionOptions="DataContructionOptions" CssClass="grid-data" />
 
     <Text Class="grid-dataHeading">Sample Data</Text>
 
@@ -25,7 +24,7 @@
 
     <Text Class="grid-resultHeading">Expression Result</Text>
 
-    <MonacoEditor @ref="_editorResult" Model="_editorResultModel" class="grid-result" />
+    <MonacoEditor @ref="_result" Id="result" ConstructionOptions="ResultContructionOptions" CssClass="grid-result" />
 
     <div class="grid-sidebar">
         <Label Class="grid-sidebarHeading">Math</Label>
@@ -259,6 +258,11 @@
     font-family: 'Segoe UI', Tahoma, Helvetica, sans-serif;
     padding:10px;
 
+    & monaco-editor-container {
+    height:100%;
+    width:100%;
+    }
+
     & .grid-expression {
     <GridItem Row="1" Column="2" ColumnSpan="2" />
     padding: 10px;
@@ -303,25 +307,18 @@
 
     & .grid-data {
     <GridItem Row="4" Column="2" />
-    height:100%;
-    width:100%;
     }
 
     & .grid-result {
     <GridItem Row="4" Column="3" />
-    font-family: monospace, monospace;
-    font-size: 14px;
     }
 </Styled>
 
 @functions {
     private string grid;
 
-    private EditorModel _editorModel { get; set; }
-    private MonacoEditor _editor;
-
-    private EditorModel _editorResultModel { get; set; }
-    private MonacoEditor _editorResult;
+    private MonacoEditor _data;
+    private MonacoEditor _result;
 
     private string error;
     public string Error { get { return error; } set { error = value; } }
@@ -356,38 +353,18 @@
 
     protected override void OnInitialized()
     {
-        var data = @"{'conversation':{'firstName': 'John','lastName' : 'doe','age': 26,'address': {'streetAddress': 'naist street','city': 'Nara','postalCode': '630-0192'},'phoneNumbers': [{'type'  : 'iPhone','number': '0123-4567-8888'},{'type'  : 'home','number': '0123-4567-8910'}]}}";
-
-        _editorModel = new EditorModel(new EditorOptions()
-        {
-            Value = JsonConvert.SerializeObject(JsonConvert.DeserializeObject(data), Formatting.Indented),
-            Language = "json",
-            Theme = "vs-dark",
-            Folding = true,
-            AutomaticLayout = true
-        });
-
-        _editorResultModel = new EditorModel(new EditorOptions()
-        {
-            Value = " ",
-            Language = "json",
-            Theme = "vs-dark",
-            Folding = true,
-            AutomaticLayout = true,
-            ReadOnly = true
-        });
     }
 
     async Task OnChanged()
     {
-        var data = await _editor.GetValue();
+        var data = await _data.GetValue();
         var dataObj = JsonConvert.DeserializeObject(data);
 
         // format data window
         var dataClean = JsonConvert.SerializeObject(dataObj, Formatting.Indented);
         if (String.Compare(data, dataClean) != 0)
         {
-            await _editor.SetValue(dataClean);
+            await _data.SetValue(dataClean);
         }
 
         if (this.exp != null)
@@ -396,14 +373,40 @@
             if (error != null)
             {
                 this.Error = error;
-                await _editorResult.SetValue(" ");
+                await _result.SetValue(" ");
             }
             else
             {
                 this.Error = null;
                 var resultJson = JsonConvert.SerializeObject(result, Formatting.Indented);
-                await _editorResult.SetValue(resultJson);
+                await _result.SetValue(resultJson);
             }
         }
     }
+
+    private StandaloneEditorConstructionOptions DataContructionOptions(MonacoEditor editor)
+    {
+        var data = @"{'conversation':{'firstName': 'John','lastName' : 'doe','age': 26,'address': {'streetAddress': 'naist street','city': 'Nara','postalCode': '630-0192'},'phoneNumbers': [{'type'  : 'iPhone','number': '0123-4567-8888'},{'type'  : 'home','number': '0123-4567-8910'}]}}";
+        return new StandaloneEditorConstructionOptions
+        {
+            Language = "json",
+            Theme = "vs-dark",
+            Folding = true,
+            AutomaticLayout = true,
+            Value = JsonConvert.SerializeObject(JsonConvert.DeserializeObject(data), Formatting.Indented)
+        };
+    }
+
+    private StandaloneEditorConstructionOptions ResultContructionOptions(MonacoEditor editor)
+    {
+        return new StandaloneEditorConstructionOptions
+        {
+            Language = "json",
+            Theme = "vs-dark",
+            Folding = true,
+            AutomaticLayout = true,
+            Value = " "
+        };
+    }
+
 }

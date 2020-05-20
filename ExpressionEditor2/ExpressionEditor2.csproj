@@ -1,20 +1,40 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
+        <TargetFramework>netstandard2.1</TargetFramework>
         <LangVersion>7.3</LangVersion>
         <RazorLangVersion>3.0</RazorLangVersion>
     </PropertyGroup>
 
     <PropertyGroup Label="PWA">
         <!-- NOTE: Update this version to force new web assemblies to be installed -->
-        <ServiceWorkerCacheVersion>12</ServiceWorkerCacheVersion>
+        <ServiceWorkerCacheVersion>13</ServiceWorkerCacheVersion>
         <ManifestShortName>ExpressionEditor2</ManifestShortName>
         <ManifestLongName>Expression Editor 2 </ManifestLongName>
         <ServiceWorkerForce>true</ServiceWorkerForce>
         <ServiceWorkerRegisterInstallableType>installable-blazor</ServiceWorkerRegisterInstallableType>
     </PropertyGroup>
-    
+
+    <ItemGroup>
+        <PackageReference Include="AdaptiveExpressions" Version="4.9.1" />
+        <PackageReference Include="BlazorCssGrid" Version="1.1.0" />
+        <PackageReference Include="Blazorise" Version="0.9.0.2" />
+        <PackageReference Include="Blazorise.Bootstrap" Version="0.9.0.2" />
+        <PackageReference Include="Blazorise.Components" Version="0.9.0.2" />
+        <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.0.2" />
+        <PackageReference Include="BlazorPWA.MSBuild" Version="1.0.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="BlazorStyled" Version="2.2.0" />
+        <PackageReference Include="Faso.Blazor.SpinKit" Version="1.0.1" />
+        <PackageReference Include="Iciclecreek.AdaptiveExpressions.Humanizer" Version="4.9.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="3.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Build" Version="3.2.0" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="3.2.0" PrivateAssets="all" />
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    </ItemGroup>
+
     <ItemGroup>
         <Compile Remove=".template.config\**" />
         <Content Remove=".template.config\**" />
@@ -35,114 +55,6 @@
         <None Include="wwwroot\css\open-iconic\font\fonts\open-iconic.svg" />
         <None Include="wwwroot\css\open-iconic\ICON-LICENSE" />
         <None Include="wwwroot\css\open-iconic\README.md" />
-        <None Include="wwwroot\lib\monaco-editor\min-maps\vs\base\worker\workerMain.js.map" />
-        <None Include="wwwroot\lib\monaco-editor\min-maps\vs\editor\editor.main.js.map" />
-        <None Include="wwwroot\lib\monaco-editor\min-maps\vs\editor\editor.main.nls.de.js.map" />
-        <None Include="wwwroot\lib\monaco-editor\min-maps\vs\editor\editor.main.nls.es.js.map" />
-        <None Include="wwwroot\lib\monaco-editor\min-maps\vs\editor\editor.main.nls.fr.js.map" />
-        <None Include="wwwroot\lib\monaco-editor\min-maps\vs\editor\editor.main.nls.it.js.map" />
-        <None Include="wwwroot\lib\monaco-editor\min-maps\vs\editor\editor.main.nls.ja.js.map" />
-        <None Include="wwwroot\lib\monaco-editor\min-maps\vs\editor\editor.main.nls.js.map" />
-        <None Include="wwwroot\lib\monaco-editor\min-maps\vs\editor\editor.main.nls.ko.js.map" />
-        <None Include="wwwroot\lib\monaco-editor\min-maps\vs\editor\editor.main.nls.ru.js.map" />
-        <None Include="wwwroot\lib\monaco-editor\min-maps\vs\editor\editor.main.nls.zh-cn.js.map" />
-        <None Include="wwwroot\lib\monaco-editor\min-maps\vs\editor\editor.main.nls.zh-tw.js.map" />
-        <None Include="wwwroot\lib\monaco-editor\min-maps\vs\loader.js.map" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\base\worker\workerMain.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\apex\apex.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\azcli\azcli.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\bat\bat.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\clojure\clojure.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\coffee\coffee.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\cpp\cpp.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\csharp\csharp.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\csp\csp.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\css\css.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\dockerfile\dockerfile.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\fsharp\fsharp.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\go\go.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\graphql\graphql.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\handlebars\handlebars.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\html\html.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\ini\ini.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\javascript\javascript.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\java\java.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\kotlin\kotlin.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\less\less.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\lua\lua.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\markdown\markdown.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\msdax\msdax.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\mysql\mysql.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\objective-c\objective-c.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\pascal\pascal.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\perl\perl.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\pgsql\pgsql.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\php\php.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\postiats\postiats.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\powerquery\powerquery.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\powershell\powershell.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\pug\pug.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\python\python.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\razor\razor.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\redis\redis.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\redshift\redshift.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\ruby\ruby.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\rust\rust.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\r\r.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\sb\sb.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\scheme\scheme.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\scss\scss.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\shell\shell.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\solidity\solidity.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\sql\sql.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\st\st.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\swift\swift.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\tcl\tcl.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\typescript\typescript.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\vb\vb.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\xml\xml.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\basic-languages\yaml\yaml.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\editor\editor.main.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\editor\editor.main.nls.de.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\editor\editor.main.nls.es.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\editor\editor.main.nls.fr.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\editor\editor.main.nls.it.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\editor\editor.main.nls.ja.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\editor\editor.main.nls.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\editor\editor.main.nls.ko.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\editor\editor.main.nls.ru.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\editor\editor.main.nls.zh-cn.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\editor\editor.main.nls.zh-tw.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\language\css\cssMode.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\language\css\cssWorker.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\language\html\htmlMode.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\language\html\htmlWorker.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\language\json\jsonMode.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\language\json\jsonWorker.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\language\typescript\tsMode.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\language\typescript\tsWorker.js" />
-        <None Include="wwwroot\lib\monaco-editor\min\vs\loader.js" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="AdaptiveExpressions" Version="4.9.1" />
-        <PackageReference Include="Blazaco" Version="1.3.1" />
-        <PackageReference Include="BlazorCssGrid" Version="1.1.0" />
-        <PackageReference Include="Blazorise" Version="0.8.8.1" />
-        <PackageReference Include="Blazorise.Bootstrap" Version="0.8.8.1" />
-        <PackageReference Include="Blazorise.Components" Version="0.8.8.1" />
-        <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.8.8.1" />
-        <PackageReference Include="BlazorPWA.MSBuild" Version="1.0.2">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="BlazorStyled" Version="1.1.0" />
-        <PackageReference Include="Faso.Blazor.SpinKit" Version="1.0.1" />
-        <PackageReference Include="Iciclecreek.AdaptiveExpressions.Humanizer" Version="4.9.1" />
-        <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.0.0-preview9.19465.2" />
-        <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.0.0-preview9.19465.2" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.AspNetCore.Blazor.DevServer" Version="3.0.0-preview9.19465.2" PrivateAssets="all" />
-        <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     </ItemGroup>
 
     <ItemGroup>
@@ -186,6 +98,14 @@
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="wwwroot\lib\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\BlazorMonaco\BlazorMonaco\BlazorMonaco.csproj" />
     </ItemGroup>
 
     <Target Name="CopyMissingBlazorContent" BeforeTargets="BlazorCompleteStandalonePublish">

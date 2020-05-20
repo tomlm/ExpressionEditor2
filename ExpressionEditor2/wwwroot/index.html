@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
     <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
     <link href="_content/Blazorise.Bootstrap/blazorise.bootstrap.css" rel="stylesheet" />
-    <link rel="stylesheet" data-name="vs/editor/editor.main" href="lib/monaco-editor/min/vs/editor/editor.main.css">
+    <link href="_content/BlazorMonaco/lib/monaco-editor/min/vs/editor/editor.main.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet" />
     <style id="styled"></style>
     <script src="ServiceWorkerRegister.js"></script>
@@ -28,10 +28,11 @@
     <script src="_content/Blazorise.Bootstrap/blazorise.bootstrap.js"></script>
 
     <!--- monaco -->
-    <script>var require = { paths: { 'vs': 'lib/monaco-editor/min/vs' } };</script>
-    <script src="lib/monaco-editor/min/vs/loader.js"></script>
-    <script src="lib/monaco-editor/min/vs/editor/editor.main.nls.js"></script>
-    <script src="lib/monaco-editor/min/vs/editor/editor.main.js"></script>
+    <script src="_content/BlazorMonaco/lib/monaco-editor/min/vs/loader.js"></script>
+    <script>require.config({ paths: { 'vs': '_content/BlazorMonaco/lib/monaco-editor/min/vs' } });</script>
+    <script src="_content/BlazorMonaco/lib/monaco-editor/min/vs/editor/editor.main.js"></script>
+    <script src="_content/BlazorMonaco/jsInterop.js"></script>
+
     <script type="blazor-boot">
     </script>
 
