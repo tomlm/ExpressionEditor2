@@ -5,7 +5,7 @@ const swInstallEvent = 'install';
 const swInstalledEvent = 'installed';
 const swActivateEvent = 'activate';
 const staticCachePrefix = 'blazor-cache-v';
-const staticCacheName = 'blazor-cache-v13';
+const staticCacheName = 'blazor-cache-v14';
 const requiredFiles = [
 "/css/bootstrap/bootstrap.min.css",
 "/css/bootstrap/bootstrap.min.css.map",
