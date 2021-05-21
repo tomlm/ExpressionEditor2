@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/ExpressionTester/v16/Server/sqlite3
+/.vs/ExpressionTester/v16
+/bin/Debug
+/obj/Debug
+/packages
