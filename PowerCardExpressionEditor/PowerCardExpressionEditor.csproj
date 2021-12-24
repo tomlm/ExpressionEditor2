@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AdaptiveCards" Version="2.7.3" />
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.8.0" />
     <PackageReference Include="Blazorise" Version="0.9.5.3" />
     <PackageReference Include="Blazorise.Bootstrap" Version="0.9.5.3" />
@@ -16,15 +17,17 @@
     <PackageReference Include="BlazorMonaco" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.1" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Bot.Schema" Version="4.15.1" />
+    <PackageReference Include="Microsoft.Recognizers.Text.DataTypes.TimexExpression" Version="1.8.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.14" />
+    <PackageReference Include="NJsonSchema" Version="10.6.6" />
     <PackageReference Include="YamlConvert" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="AdaptiveFX">
-      <HintPath>..\..\..\devops\BotDesigner\src\PowerCards\Microsoft.AdaptiveFX\bin\Debug\netstandard2.1\win10-x64\AdaptiveFX.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\..\devops\BotDesigner\src\PowerCards\Microsoft.AdaptiveFX\AdaptiveFX.csproj" />
+    <ProjectReference Include="..\..\..\devops\BotDesigner\src\PowerCards\Microsoft.PowerCards\PowerCards.csproj" />
   </ItemGroup>
 
   <ItemGroup>

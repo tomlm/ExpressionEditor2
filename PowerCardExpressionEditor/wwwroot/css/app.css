@@ -87,12 +87,19 @@ a, .btn-link {
     display: grid;
     grid-template-rows: auto auto auto 1fr;
     grid-row-gap: 2px;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 2fr 1fr;
     grid-column-gap: 10px;
     font-family: 'Segoe UI', Tahoma, Helvetica, sans-serif;
     padding: 10px;
     width: 100vw;
     height: 100vh;
+}
+
+.monaco-editor-container, .monaco-diff-editor {
+    min-height: 100%;
+    height: 100%;
+    min-width: 100%;
+    width: 100%;
 }
 
 .monaco-editor-container {
@@ -105,6 +112,7 @@ a, .btn-link {
 .grid-expression {
     grid-row: 1;
     grid-column: 1 / span 2;
+    height: 100px;
     padding: 10px;
 }
 
@@ -115,31 +123,95 @@ a, .btn-link {
     font-size: 14px;
 }
 
-.grid-dataHeading {
+.grid-memory-heading{
     grid-row: 3;
     grid-column: 1;
-    font-size: 12px;
-    font-size: 12px;
+    font-size: 20px;
     font-weight: bold;
     color: gray;
     padding: 2px;
 }
 
-.grid-resultHeading {
+.grid-eval-result-heading {
     grid-row: 3;
     grid-column: 2;
-    font-size: 12px;
+    font-size: 20px;
     font-weight: bold;
     color: gray;
     padding: 2px;
 }
-
-.grid-data {
+.grid-memory {
     grid-row: 4;
     grid-column: 1;
 }
 
-.grid-result {
+.grid-eval-result {
     grid-row: 4;
     grid-column: 2;
+}
+
+
+
+.spinner {
+    margin: 100px auto;
+    width: 60px;
+    height: 60px;
+    position: relative;
+    text-align: center;
+    -webkit-animation: sk-rotate 2.0s infinite linear;
+    animation: sk-rotate 2.0s infinite linear;
+}
+
+.dot1, .dot2 {
+    width: 60%;
+    height: 60%;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    background-color: #333;
+    border-radius: 100%;
+    -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+    animation: sk-bounce 2.0s infinite ease-in-out;
+}
+
+.dot2 {
+    top: auto;
+    bottom: 0;
+    -webkit-animation-delay: -1.0s;
+    animation-delay: -1.0s;
+}
+
+@-webkit-keyframes sk-rotate {
+    100% {
+        -webkit-transform: rotate(360deg)
+    }
+}
+
+@keyframes sk-rotate {
+    100% {
+        transform: rotate(360deg);
+        -webkit-transform: rotate(360deg)
+    }
+}
+
+@-webkit-keyframes sk-bounce {
+    0%, 100% {
+        -webkit-transform: scale(0.0)
+    }
+
+    50% {
+        -webkit-transform: scale(1.0)
+    }
+}
+
+@keyframes sk-bounce {
+    0%, 100% {
+        transform: scale(0.0);
+        -webkit-transform: scale(0.0);
+    }
+
+    50% {
+        transform: scale(1.0);
+        -webkit-transform: scale(1.0);
+    }
 }

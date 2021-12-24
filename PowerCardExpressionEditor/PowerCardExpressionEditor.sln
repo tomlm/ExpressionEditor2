@@ -5,6 +5,10 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerCardExpressionEditor", "PowerCardExpressionEditor.csproj", "{BB34E014-FFB7-4EC0-A2B9-D75DD99E3C86}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdaptiveFX", "..\..\..\devops\BotDesigner\src\PowerCards\Microsoft.AdaptiveFX\AdaptiveFX.csproj", "{26FF7008-5ABE-4D47-9A5D-F68D2E801968}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerCards", "..\..\..\devops\BotDesigner\src\PowerCards\Microsoft.PowerCards\PowerCards.csproj", "{EA420C7B-FE82-43BE-B306-BD1F9A87DBF5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{BB34E014-FFB7-4EC0-A2B9-D75DD99E3C86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB34E014-FFB7-4EC0-A2B9-D75DD99E3C86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB34E014-FFB7-4EC0-A2B9-D75DD99E3C86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26FF7008-5ABE-4D47-9A5D-F68D2E801968}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26FF7008-5ABE-4D47-9A5D-F68D2E801968}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26FF7008-5ABE-4D47-9A5D-F68D2E801968}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26FF7008-5ABE-4D47-9A5D-F68D2E801968}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA420C7B-FE82-43BE-B306-BD1F9A87DBF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA420C7B-FE82-43BE-B306-BD1F9A87DBF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA420C7B-FE82-43BE-B306-BD1F9A87DBF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA420C7B-FE82-43BE-B306-BD1F9A87DBF5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

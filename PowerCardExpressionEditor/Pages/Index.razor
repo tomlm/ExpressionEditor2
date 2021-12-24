@@ -1,34 +1,39 @@
 ﻿@page "/"
 @inherits LayoutComponentBase
+@implements IDisposable
 @using Blazorise
 @using Blazorise.Components
+@using Microsoft.Extensions.Logging.Abstractions
 @using Newtonsoft.Json
 @using Microsoft.AdaptiveFX;
-@using Microsoft.AspNetCore.Components.Web
 @using BlazorMonaco
 @using YamlConvert
 
 <!-- @using BlazorMonaco.Bridge-->
 <!-- layout -->
 <div class="pageGrid">
-    <TextEdit class="grid-expression" Placeholder="Enter expression..." @bind-Text="Expression" Size="Size.Large" />
-
-    <MonacoEditor @ref="_data" Id="data" ConstructionOptions="DataContructionOptions" CssClass="grid-data" />
-
-    <Text Class="grid-dataHeading">Sample Data</Text>
-
+    <!-- <TextEdit class="grid-expression" Placeholder="Enter expression..." @bind-Text="Expression" Size="Size.Large" /> -->
     <Alert Class="grid-alert" Color="Color.Warning" @bind-Visible="@ShowAlert">
-        <AlertMessage >
+        <AlertMessage>
             Error
         </AlertMessage>
-        <AlertMessage >
+        <AlertMessage>
             @Error
         </AlertMessage>
     </Alert>
 
-    <Text Class="grid-resultHeading">Expression Result</Text>
+    <Text Class="grid-memory-heading">Memory Diff</Text>
 
-    <MonacoEditor @ref="_result" Id="result" ConstructionOptions="ResultContructionOptions" CssClass="grid-result" />
+    <Text Class="grid-eval-result-heading">Last Statement Result</Text>
+
+    <MonacoEditor @ref="_powerfx" Id="powerfx" ConstructionOptions="PowerFXContructionOptions" CssClass="grid-expression"
+                  OnDidChangeModelContent="OnEditorChangeModelContent" />
+
+    <MonacoDiffEditor @ref="_memory" Id="memory" ConstructionOptions="DiffEditorConstructionOptions" CssClass="grid-memory"
+                    OnDidInit="OnMemoryDidInit" OnDidChangeModelContentOriginal="OnMemoryChangeModelContentOriginal" />
+
+    <MonacoEditor @ref="_evalResult" Id="evalResult" ConstructionOptions="ResultContructionOptions" CssClass="grid-eval-result" />
+
 
 </div>
 
@@ -36,10 +41,15 @@
 @code {
     private string grid;
 
-    private MonacoEditor _data;
-    private MonacoEditor _result;
+    private MonacoEditor _powerfx;
+    private MonacoDiffEditor _memory;
+    private MonacoEditor _evalResult;
+    private DotNetObjectReference<Index> _objectReference;
 
     private string error;
+
+    public IJSRuntime jsRuntime { get; set; }
+
     public string Error { get { return error; } set { error = value; } }
 
     private bool ShowAlert { get { return !String.IsNullOrEmpty(this.Error); } set { } }
@@ -66,7 +76,7 @@
                 Error = err.Message;
             }
 
-            OnChanged().ContinueWith(x => x.IsFaulted);
+            EvaluateExpression().ContinueWith(x => x.IsFaulted);
         }
     }
 
@@ -74,50 +84,119 @@
     {
     }
 
-    async Task OnChanged()
+    protected override void OnAfterRender(bool firstRender)
     {
-        var data = await _data.GetValue();
+        base.OnAfterRender(firstRender);
+        //if (firstRender)
+        //{
+        //    _objectReference = DotNetObjectReference.Create(this);
+        //    jsRuntime.InvokeVoidAsync("PowerFX.registerLanguage", _objectReference);
+        //}
+    }
+    async Task EvaluateExpression()
+    {
+        var data = await _memory.OriginalEditor.GetValue();
         var dataObj = YamlConvert.DeserializeObject(data);
-        this._data.Layout();
-        this._result.Layout();
 
         // format data window
         var dataClean = YamlConvert.SerializeObject(dataObj);
         if (String.Compare(data, dataClean) != 0)
         {
-            await _data.SetValue(dataClean);
+            await _memory.OriginalEditor.SetValue(dataClean);
+            await _memory.ModifiedEditor.SetValue(dataClean);
         }
 
         if (this.exp != null)
         {
             try
             {
-
                 var result = await this.exp.TryEvaluate(dataObj);
                 this.Error = null;
-                var resultJson = YamlConvert.SerializeObject(result);
-                await _result.SetValue(resultJson);
+                await _evalResult.SetValue(YamlConvert.SerializeObject(result));
+                await _memory.ModifiedEditor.SetValue(YamlConvert.SerializeObject(dataObj));
+                //await _memory.SetModel(new DiffEditorModel
+                //    {
+                //        Original = await MonacoEditorBase.CreateModel(dataClean, "yaml"),
+                //        Modified = await MonacoEditorBase.CreateModel(YamlConvert.SerializeObject(dataObj), "yaml")
+                //    });
+
+                //                await _memory.ModifiedEditor.SetValue(YamlConvert.SerializeObject(dataObj));
             }
             catch (Exception err)
             {
                 this.Error = err.Message;
-                await _result.SetValue(" ");
+                await _evalResult.SetValue(" ");
+                await _memory.ModifiedEditor.SetValue(dataClean);
             }
         }
     }
 
-    private StandaloneEditorConstructionOptions DataContructionOptions(MonacoEditor editor)
+    //[JSInvokable(nameof(PowerFXCompletionItems))]
+    //async Task<CompletionList> PowerFXCompletionItems(TextModel model, BlazorMonaco.Position position)
+    //{
+    //     find out if we are completing a property in the 'dependencies' object.
+    //    var textUntilPosition = await model.GetValueInRange(new BlazorMonaco.Range
+    //        {
+    //            StartLineNumber = 1,
+    //            StartColumn = 1,
+    //            EndLineNumber = position.LineNumber,
+    //            EndColumn = position.Column
+    //        }, null);
+    //    var powerCard = new PowerCard();
+    //    var context = new ScriptContext(card);
+    //    var scriptRunner = new AdaptiveFXScriptRunner(_logger, context);
+    //    var completionItems = await scriptRunner.GetCompletionItemsAsync(textUntilPosition, textUntilPosition.Length, CancellationToken.None);
+    //    return new CompletionList()
+    //        {
+    //            Items = new CompletionItem[0]
+    //        };
+    //}
+
+    private async Task OnMemoryDidInit(MonacoEditorBase editor)
     {
-        var data = "{\"isVip\":true,\"viewer\":{\"id\":\"123123123\",\"name\":\"John Doe\",\"aadObjectId\":\"{123123-123123-123123}\"},\"numbers\":[1,2,3,4,5],\"addresses\":[{\"street\":\"123 electric boogaloo\",\"city\":\"Funkytown\",\"state\":\"Florida\",\"zip\":12345},{\"street\":\"Main street\",\"city\":\"Pottersville\",\"state\":\"Hollywood\",\"zip\":54321}]}";
+        // Get or create the original model
+        var memory = YamlConvert.SerializeObject(JsonConvert.DeserializeObject("{\"isVip\":true,\"viewer\":{\"id\":\"123123123\",\"name\":\"John Doe\",\"aadObjectId\":\"{123123-123123-123123}\"},\"numbers\":[1,2,3,4,5],\"addresses\":[{\"street\":\"123 electric boogaloo\",\"city\":\"Funkytown\",\"state\":\"Florida\",\"zip\":12345},{\"street\":\"Main street\",\"city\":\"Pottersville\",\"state\":\"Hollywood\",\"zip\":54321}]}"));
+        await _memory.SetModel(new DiffEditorModel
+            {
+                Original = await MonacoEditorBase.CreateModel(memory, "yaml"),
+                Modified = await MonacoEditorBase.CreateModel(memory, "yaml")
+            });
+    }
+
+    private async Task OnMemoryChangeModelContentOriginal(ModelContentChangedEvent evt)
+    {
+        await EvaluateExpression();
+    }
+
+    private async Task OnEditorChangeModelContent(ModelContentChangedEvent eventArgs)
+    {
+        this.Expression = await _powerfx.GetValue();
+    }
+
+    private StandaloneEditorConstructionOptions PowerFXContructionOptions(MonacoEditor editor)
+    {
         return new StandaloneEditorConstructionOptions
             {
-                Language = "yaml",
+                Language = "powerfx",
                 Theme = "vs-dark",
                 Folding = true,
                 AutomaticLayout = true,
-                Value = YamlConvert.SerializeObject(JsonConvert.DeserializeObject(data))
+                Value = ""
             };
     }
+
+    //private StandaloneEditorConstructionOptions DataContructionOptions(MonacoEditor editor)
+    //{
+    //    var data = "{\"isVip\":true,\"viewer\":{\"id\":\"123123123\",\"name\":\"John Doe\",\"aadObjectId\":\"{123123-123123-123123}\"},\"numbers\":[1,2,3,4,5],\"addresses\":[{\"street\":\"123 electric boogaloo\",\"city\":\"Funkytown\",\"state\":\"Florida\",\"zip\":12345},{\"street\":\"Main street\",\"city\":\"Pottersville\",\"state\":\"Hollywood\",\"zip\":54321}]}";
+    //    return new StandaloneEditorConstructionOptions
+    //        {
+    //            Language = "yaml",
+    //            Theme = "vs-dark",
+    //            Folding = true,
+    //            AutomaticLayout = true,
+    //            Value = YamlConvert.SerializeObject(JsonConvert.DeserializeObject(data))
+    //        };
+    //}
 
     private StandaloneEditorConstructionOptions ResultContructionOptions(MonacoEditor editor)
     {
@@ -131,4 +210,23 @@
             };
     }
 
+    private DiffEditorConstructionOptions DiffEditorConstructionOptions(MonacoDiffEditor editor)
+    {
+        return new DiffEditorConstructionOptions
+            {
+                OriginalEditable = true,
+                AutoIndent = true,
+                FormatOnPaste = true,
+            };
+    }
+
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+        if (_objectReference != null)
+        {
+            //Now dispose our object reference so our component can be garbage collected
+            _objectReference.Dispose();
+        }
+    }
 }
