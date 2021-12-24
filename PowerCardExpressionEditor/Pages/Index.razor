@@ -1,0 +1,134 @@
+﻿@page "/"
+@inherits LayoutComponentBase
+@using Blazorise
+@using Blazorise.Components
+@using Newtonsoft.Json
+@using Microsoft.AdaptiveFX;
+@using Microsoft.AspNetCore.Components.Web
+@using BlazorMonaco
+@using YamlConvert
+
+<!-- @using BlazorMonaco.Bridge-->
+<!-- layout -->
+<div class="pageGrid">
+    <TextEdit class="grid-expression" Placeholder="Enter expression..." @bind-Text="Expression" Size="Size.Large" />
+
+    <MonacoEditor @ref="_data" Id="data" ConstructionOptions="DataContructionOptions" CssClass="grid-data" />
+
+    <Text Class="grid-dataHeading">Sample Data</Text>
+
+    <Alert Class="grid-alert" Color="Color.Warning" @bind-Visible="@ShowAlert">
+        <AlertMessage >
+            Error
+        </AlertMessage>
+        <AlertMessage >
+            @Error
+        </AlertMessage>
+    </Alert>
+
+    <Text Class="grid-resultHeading">Expression Result</Text>
+
+    <MonacoEditor @ref="_result" Id="result" ConstructionOptions="ResultContructionOptions" CssClass="grid-result" />
+
+</div>
+
+
+@code {
+    private string grid;
+
+    private MonacoEditor _data;
+    private MonacoEditor _result;
+
+    private string error;
+    public string Error { get { return error; } set { error = value; } }
+
+    private bool ShowAlert { get { return !String.IsNullOrEmpty(this.Error); } set { } }
+
+    private Expression exp;
+    private string expression;
+    public string Expression
+    {
+        get
+        {
+            return expression;
+        }
+        set
+        {
+            expression = value;
+            exp = null;
+            try
+            {
+                exp = Microsoft.AdaptiveFX.Expression.Parse(value);
+                Error = null;
+            }
+            catch (Exception err)
+            {
+                Error = err.Message;
+            }
+
+            OnChanged().ContinueWith(x => x.IsFaulted);
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+    }
+
+    async Task OnChanged()
+    {
+        var data = await _data.GetValue();
+        var dataObj = YamlConvert.DeserializeObject(data);
+        this._data.Layout();
+        this._result.Layout();
+
+        // format data window
+        var dataClean = YamlConvert.SerializeObject(dataObj);
+        if (String.Compare(data, dataClean) != 0)
+        {
+            await _data.SetValue(dataClean);
+        }
+
+        if (this.exp != null)
+        {
+            try
+            {
+
+                var result = await this.exp.TryEvaluate(dataObj);
+                this.Error = null;
+                var resultJson = YamlConvert.SerializeObject(result);
+                await _result.SetValue(resultJson);
+            }
+            catch (Exception err)
+            {
+                this.Error = err.Message;
+                await _result.SetValue(" ");
+            }
+        }
+    }
+
+    private StandaloneEditorConstructionOptions DataContructionOptions(MonacoEditor editor)
+    {
+        var data = "{\"isVip\":true,\"viewer\":{\"id\":\"123123123\",\"name\":\"John Doe\",\"aadObjectId\":\"{123123-123123-123123}\"},\"numbers\":[1,2,3,4,5],\"addresses\":[{\"street\":\"123 electric boogaloo\",\"city\":\"Funkytown\",\"state\":\"Florida\",\"zip\":12345},{\"street\":\"Main street\",\"city\":\"Pottersville\",\"state\":\"Hollywood\",\"zip\":54321}]}";
+        return new StandaloneEditorConstructionOptions
+            {
+                Language = "yaml",
+                Theme = "vs-dark",
+                Folding = true,
+                AutomaticLayout = true,
+                Value = YamlConvert.SerializeObject(JsonConvert.DeserializeObject(data))
+            };
+    }
+
+    private StandaloneEditorConstructionOptions ResultContructionOptions(MonacoEditor editor)
+    {
+        return new StandaloneEditorConstructionOptions
+            {
+                Language = "yaml",
+                Theme = "vs-dark",
+                Folding = true,
+                AutomaticLayout = true,
+                Value = " "
+            };
+    }
+
+}
