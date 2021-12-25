@@ -2,8 +2,8 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/ExpressionEvaluator2
+/.vs/
 /**/bin
 /**/obj
-/.vs/ExpressionEvaluator3
-/PowerCardExpressionEditor/.vs/PowerCardExpressionEditor/v17
+/PowerCardExpressionEditor/.vs
+
