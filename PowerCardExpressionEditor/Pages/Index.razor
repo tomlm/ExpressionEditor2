@@ -7,6 +7,7 @@
 @using Microsoft.Extensions.Logging.Abstractions
 @using Microsoft.PowerFx.LanguageServerProtocol.Protocol
 @using Newtonsoft.Json
+@using NJsonSchema
 @using Microsoft.AdaptiveFX;
 @using BlazorMonaco
 @using Microsoft.PowerCards;
@@ -14,6 +15,7 @@
 @using Microsoft.PowerCards.Scripting;
 
 <!-- @using BlazorMonaco.Bridge-->
+@using Newtonsoft.Json.Linq
 <!-- layout -->
 <div class="pageGrid">
     <!-- <TextEdit class="grid-expression" Placeholder="Enter expression..." @bind-Text="Expression" Size="Size.Large" /> -->
@@ -137,21 +139,37 @@
         return caret;
     }
 
-    private AdaptiveFXScriptRunner CreateScriptRunner()
+    private async Task<AdaptiveFXScriptRunner> CreateScriptRunner()
     {
-        var powerCard = new PowerCard();
+        var dataYaml = await _memory.OriginalEditor.GetValue();
+        var yobj = YamlConvert.DeserializeObject(dataYaml);
+        var json = ((JObject)yobj).ToString();
+        var schema = JsonSchema.FromSampleJson(json);
+        var schema2 = Newtonsoft.Json.Schema.JSchema.Parse(schema.ToJson());
+        schema2.Properties.Remove("viewer");
+        var powerCard = new PowerCard()
+            {
+                Variables = schema2.Properties
+            };
         var context = new ScriptContext(powerCard);
         return new AdaptiveFXScriptRunner(NullLogger.Instance, context);
     }
 
     [JSInvokable(nameof(PowerFXCompletionItems))]
-    public async Task<CompletionItem[]> PowerFXCompletionItems(BlazorMonaco.Position position)
+    public async Task<object[]> PowerFXCompletionItems(BlazorMonaco.Position position)
     {
         var expression = await _powerfx.GetValue();
         int caret = GetCaretFromPosition(expression, position);
-        var scriptRunner = CreateScriptRunner();
+        var scriptRunner = await CreateScriptRunner();
         var completionItems = await scriptRunner.GetCompletionItemsAsync(expression, caret, CancellationToken.None);
-        return completionItems.ToArray();
+        return completionItems.Select(ci => new
+        {
+            documentation = ci.Documentation,
+            detail = ci.Detail,
+            kind = ci.Kind,
+            label = ci.Label,
+            insertText = ci.Label
+        }).ToArray();
     }
 
 
@@ -160,7 +178,7 @@
     {
         var expression = await _powerfx.GetValue();
         int caret = GetCaretFromPosition(expression, position);
-        var scriptRunner = CreateScriptRunner();
+        var scriptRunner = await CreateScriptRunner();
         var signatureHelp = await scriptRunner.GetSignatureHelpAsync(expression, caret, CancellationToken.None);
         return signatureHelp;
     }
@@ -168,7 +186,33 @@
     private async Task OnMemoryDidInit(MonacoEditorBase editor)
     {
         // Get or create the original model
-        var memory = YamlConvert.SerializeObject(JsonConvert.DeserializeObject("{\"isVip\":true,\"viewer\":{\"id\":\"123123123\",\"name\":\"John Doe\",\"aadObjectId\":\"{123123-123123-123123}\"},\"numbers\":[1,2,3,4,5],\"addresses\":[{\"street\":\"123 electric boogaloo\",\"city\":\"Funkytown\",\"state\":\"Florida\",\"zip\":12345},{\"street\":\"Main street\",\"city\":\"Pottersville\",\"state\":\"Hollywood\",\"zip\":54321}]}"));
+        var memory = @"
+isVip: true
+viewer:
+  id: '123123123'
+  name: John Doe
+  aadObjectId: '{123123-123123-123123}'
+numbers: [1, 2, 3, 4, 5]
+homeAddress: 
+  street: 123 electric boogaloo
+  city: Funkytown
+  state: Florida
+  zip: 12345
+workAddress:
+  street: Main street
+  city: Pottersville
+  state: Hollywood
+  zip: 54321
+phoneNumbers:
+- type: mobile
+  number: 555-123-4567
+- type: mobile
+  number: 555-123-0987
+- type: home
+  number: 555-888-9999
+- type: work
+  number: 555-777-1111
+";
         await _memory.SetModel(new DiffEditorModel
             {
                 Original = await MonacoEditorBase.CreateModel(memory, "yaml"),
