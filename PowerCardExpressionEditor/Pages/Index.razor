@@ -126,6 +126,7 @@
                 await _memory.ModifiedEditor.SetValue(dataClean);
             }
         }
+        await _memory.Layout();
     }
 
     private int GetCaretFromPosition(string expression, BlazorMonaco.Position position)
@@ -181,6 +182,12 @@
         var scriptRunner = await CreateScriptRunner();
         var signatureHelp = await scriptRunner.GetSignatureHelpAsync(expression, caret, CancellationToken.None);
         return signatureHelp;
+    }
+
+    [JSInvokable(nameof(OnResize))]
+    public async Task OnResize()
+    {
+        await _memory.Layout();
     }
 
     private async Task OnMemoryDidInit(MonacoEditorBase editor)

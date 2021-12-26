@@ -95,7 +95,10 @@
                         return signatureHelp;
                     }
                 });
+
+            window.addEventListener("resize", async function () { await dotNetObject.invokeMethodAsync('OnResize'); });
             console.log('registerLanguage called')
+
         }
     </script>
 
