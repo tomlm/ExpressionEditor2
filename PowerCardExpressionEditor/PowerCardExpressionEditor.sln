@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdaptiveFX", "..\..\..\devo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerCards", "..\..\..\devops\BotDesigner\src\PowerCards\Microsoft.PowerCards\PowerCards.csproj", "{EA420C7B-FE82-43BE-B306-BD1F9A87DBF5}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerCards.Scripting", "..\..\..\devops\BotDesigner\src\PowerCards\Microsoft.PowerCards.Scripting\PowerCards.Scripting.csproj", "{21A90833-40B9-4D9F-BD83-73C72A23C7E0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerCards.Interfaces", "..\..\..\devops\BotDesigner\src\PowerCards\Microsoft.PowerCards.Interfaces\PowerCards.Interfaces.csproj", "{21247C09-B527-4F36-9B82-6D4F42643826}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{EA420C7B-FE82-43BE-B306-BD1F9A87DBF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA420C7B-FE82-43BE-B306-BD1F9A87DBF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA420C7B-FE82-43BE-B306-BD1F9A87DBF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21A90833-40B9-4D9F-BD83-73C72A23C7E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21A90833-40B9-4D9F-BD83-73C72A23C7E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21A90833-40B9-4D9F-BD83-73C72A23C7E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21A90833-40B9-4D9F-BD83-73C72A23C7E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21247C09-B527-4F36-9B82-6D4F42643826}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21247C09-B527-4F36-9B82-6D4F42643826}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21247C09-B527-4F36-9B82-6D4F42643826}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21247C09-B527-4F36-9B82-6D4F42643826}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

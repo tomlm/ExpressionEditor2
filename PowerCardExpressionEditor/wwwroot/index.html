@@ -50,18 +50,55 @@
 
     <script src="_framework/blazor.webassembly.js"></script>
     <script>navigator.serviceWorker.register('service-worker.js');</script>
-    <!-- <script>
+
+    <!-- hook up language intellisense -->
+    <script>
         var PowerFX = PowerFX || {};
-        PowerFX.registerLanguage = function (dotNetObject) {
+        console.log("loading...");
+        PowerFX.registerLanguage = async function (dotNetObject) {
+            console.log('registerLanguage called')
+            monaco.languages.register({ id: 'powerfx' });
+            console.log('registerCompletionItemProvider called')
             monaco.languages.registerCompletionItemProvider('powerfx',
                 {
-                    provideCompletionItems: function (model, position) {
-                        dotNetObject.invokeMethodAsync('PowerFxCompletionItems', model, position);
+                    triggerCharacters: [
+                        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+                        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+                        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_', '.'],
+                    provideCompletionItems: async function (model, position, context, ct ) {
+                        console.log('provideCompletionItems called')
+                        console.log(JSON.stringify(position));
+                        console.log(JSON.stringify(context));
+                        let completionItems = {
+                            suggestions: await dotNetObject.invokeMethodAsync('PowerFXCompletionItems', position),
+                            dispose: function () { }
+                        };
+                        console.log(JSON.stringify(completionItems));
+                        return completionItems;
                     }
                 });
+
+            console.log('registerSignatureHelpProvider called')
+            monaco.languages.registerSignatureHelpProvider('powerfx',
+                {
+                    signatureHelpTriggerCharacters: ['(', ','],
+                    provideSignatureHelp: async function (model, position, ct, context) {
+                        console.log('provideSignatureHelp called')
+                        console.log(JSON.stringify(position));
+                        console.log(JSON.stringify(context));
+                        let signatureHelp =
+                        {
+                            value: await dotNetObject.invokeMethodAsync('PowerFXSignatureHelp', position),
+                            dispose: function () { }
+                        };
+                        console.log(JSON.stringify(signatureHelp));
+                        return signatureHelp;
+                    }
+                });
+            console.log('registerLanguage called')
         }
     </script>
-        -->
+
 </body>
 
 </html>

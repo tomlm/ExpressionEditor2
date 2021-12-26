@@ -112,7 +112,7 @@ a, .btn-link {
 .grid-expression {
     grid-row: 1;
     grid-column: 1 / span 2;
-    height: 100px;
+    height: 200px;
     padding: 10px;
 }
 
