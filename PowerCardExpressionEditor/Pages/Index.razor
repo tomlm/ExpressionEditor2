@@ -4,7 +4,12 @@
 @inject IJSRuntime JS
 @using Blazorise
 @using Blazorise.Components
+@using Microsoft.AdaptiveFX.Memory
+@using Microsoft.Bot.Schema
 @using Microsoft.Extensions.Logging.Abstractions
+@using Microsoft.Extensions.Logging.Debug
+@using Microsoft.PowerCards.Scripting.Functions
+@using Microsoft.PowerFx
 @using Microsoft.PowerFx.LanguageServerProtocol.Protocol
 @using Newtonsoft.Json
 @using NJsonSchema
@@ -35,7 +40,7 @@
     <MonacoEditor @ref="_powerfx" Id="powerfx" ConstructionOptions="PowerFXContructionOptions" CssClass="grid-expression"
                   OnDidChangeModelContent="OnEditorChangeModelContent" />
 
-    <MonacoDiffEditor @ref="_memory" Id="memory" ConstructionOptions="DiffEditorConstructionOptions" CssClass="grid-memory"
+    <MonacoDiffEditor @ref="_memoryDiff" Id="memory" ConstructionOptions="DiffEditorConstructionOptions" CssClass="grid-memory"
                       OnDidInit="OnMemoryDidInit" OnDidChangeModelContentOriginal="OnMemoryChangeModelContentOriginal" />
 
     <MonacoEditor @ref="_evalResult" Id="evalResult" ConstructionOptions="ResultContructionOptions" CssClass="grid-eval-result" />
@@ -45,41 +50,59 @@
 
 
 @code {
-    private string grid;
+    private ILogger _logger = new DebugLoggerProvider().CreateLogger(nameof(Index));
+    private readonly static Lazy<IDictionary<string, ExpressionEvaluator>> s_functions = new Lazy<IDictionary<string, ExpressionEvaluator>>(() =>
+        {
+            Dictionary<string, ExpressionEvaluator> functions = new Dictionary<string, ExpressionEvaluator>();
+            functions.Add(new Navigate().Type, new Navigate());
+            functions.Add(new Back().Type, new Back());
+            functions.Add(new RunFlow().Type, new RunFlow());
+            functions.Add(new ShowMessage().Type, new ShowMessage());
+            functions.Add(new AppendItem().Type, new AppendItem());
+            functions.Add(new RemoveAt().Type, new RemoveAt());
 
-    private MonacoEditor _powerfx;
-    private MonacoDiffEditor _memory;
-    private MonacoEditor _evalResult;
-    private DotNetObjectReference<Index> _objectReference;
+        // add powerFx functions we don't have.
+        foreach (var powerFunction in new RecalcEngine().GetAllFunctionNames())
+            {
+                if (!Microsoft.AdaptiveFX.Expression.Functions.ContainsKey(powerFunction) && !functions.ContainsKey(powerFunction))
+                {
+                    System.Diagnostics.Debug.WriteLine(powerFunction + "(...)");
+                    functions.Add(powerFunction, new PowerFunctionEvaluator(powerFunction, ReturnType.Object));
+                }
+            }
+            return functions;
+        });
 
-    private string error;
+    private ExpressionParser _parser = new ExpressionParser((type) =>
+    {
+        if (s_functions.Value.TryGetValue(type, out var func))
+        {
+            return func;
+        }
 
-    public string Error { get { return error; } set { error = value; } }
+        return Microsoft.AdaptiveFX.Expression.Functions[type];
+    });
+
+    private string grid = default;
+    private MonacoEditor _powerfx = default;
+    private MonacoDiffEditor _memoryDiff = default;
+    private MonacoEditor _evalResult = default;
+    private DotNetObjectReference<Index> _objectReference = default;
+    private string _expression = String.Empty;
+
+    public string Error { get; set; } = String.Empty;
 
     private bool ShowAlert { get { return !String.IsNullOrEmpty(this.Error); } set { } }
 
-    private Expression exp;
-    private string expression;
     public string Expression
     {
         get
         {
-            return expression;
+            return _expression;
         }
         set
         {
-            expression = value;
-            exp = null;
-            try
-            {
-                exp = Microsoft.AdaptiveFX.Expression.Parse(value);
-                Error = null;
-            }
-            catch (Exception err)
-            {
-                Error = err.Message;
-            }
-
+            _expression = value;
             EvaluateExpression().ContinueWith(x => x.IsFaulted);
         }
     }
@@ -99,34 +122,36 @@
     }
     async Task EvaluateExpression()
     {
-        var data = await _memory.OriginalEditor.GetValue();
-        var dataObj = YamlConvert.DeserializeObject(data);
+        var data = await _memoryDiff.OriginalEditor.GetValue();
+        var dataObj = YamlConvert.DeserializeObject<JObject>(data);
 
         // format data window
         var dataClean = YamlConvert.SerializeObject(dataObj);
         if (String.Compare(data, dataClean) != 0)
         {
-            await _memory.OriginalEditor.SetValue(dataClean);
-            await _memory.ModifiedEditor.SetValue(dataClean);
+            await _memoryDiff.OriginalEditor.SetValue(dataClean);
+            await _memoryDiff.ModifiedEditor.SetValue(dataClean);
         }
 
-        if (this.exp != null)
+        if (!String.IsNullOrEmpty(this._expression))
         {
             try
             {
-                var result = await this.exp.TryEvaluate(dataObj);
-                this.Error = null;
+                this.Error = String.Empty;
+                var expression = _parser.Parse(this._expression);
+                var result = await expression.TryEvaluate(dataObj);
                 await _evalResult.SetValue(YamlConvert.SerializeObject(result));
-                await _memory.ModifiedEditor.SetValue(YamlConvert.SerializeObject(dataObj));
+                await _memoryDiff.ModifiedEditor.SetValue(YamlConvert.SerializeObject(dataObj));
             }
             catch (Exception err)
             {
                 this.Error = err.Message;
                 await _evalResult.SetValue(" ");
-                await _memory.ModifiedEditor.SetValue(dataClean);
+                await _memoryDiff.ModifiedEditor.SetValue(dataClean);
             }
+            this.StateHasChanged();
         }
-        await _memory.Layout();
+        await _memoryDiff.Layout();
     }
 
     private int GetCaretFromPosition(string expression, BlazorMonaco.Position position)
@@ -140,11 +165,29 @@
         return caret;
     }
 
-    private async Task<AdaptiveFXScriptRunner> CreateScriptRunner()
+    private PowerCard CreatePowerCard(JObject data)
     {
-        var dataYaml = await _memory.OriginalEditor.GetValue();
-        var yobj = YamlConvert.DeserializeObject(dataYaml);
-        var json = ((JObject)yobj).ToString();
+        ChannelAccount viewer = new ChannelAccount();
+        if (data.ContainsKey("viewer"))
+        {
+            JObject val = (JObject)data.GetValue("viewer") ?? new JObject();
+            viewer = val.ToObject<ChannelAccount>();
+        }
+
+        var invoke = new AdaptiveCardInvokeValue()
+            {
+                Action = new AdaptiveCardInvokeAction()
+                {
+                    Verb = "show",
+                }
+            };
+        if (data.ContainsKey("action"))
+        {
+            JObject val = (JObject)data.GetValue("action") ?? new JObject();
+            invoke.Action = val.ToObject<AdaptiveCardInvokeAction>();
+        }
+
+        var json = data.ToString();
         var schema = JsonSchema.FromSampleJson(json);
         var schema2 = Newtonsoft.Json.Schema.JSchema.Parse(schema.ToJson());
         schema2.Properties.Remove("viewer");
@@ -152,8 +195,30 @@
             {
                 Variables = schema2.Properties
             };
+        //var instanceId = Guid.NewGuid().ToString();
+        //var memory = new PowerCardMemory(powerCard,
+        //    new Activity(ActivityTypes.Invoke)
+        //        {
+        //            ServiceUrl = "https:about",
+        //            ChannelId = $"api",
+        //            Id = instanceId,
+        //            From = viewer,
+        //            Recipient = new ChannelAccount() { Id = "bot" },
+        //            Conversation = new ConversationAccount() { Id = instanceId },
+        //            Value = invoke
+        //        },
+        //    invoke.Action,
+        //    new JObject(),
+        //    new JObject(),
+        //    data
+        //);
+        return powerCard;
+    }
+
+    private async Task<AdaptiveFXScriptRunner> CreateScriptRunner(PowerCard powerCard)
+    {
         var context = new ScriptContext(powerCard);
-        return new AdaptiveFXScriptRunner(NullLogger.Instance, context);
+        return new AdaptiveFXScriptRunner(_logger, context);
     }
 
     [JSInvokable(nameof(PowerFXCompletionItems))]
@@ -161,7 +226,9 @@
     {
         var expression = await _powerfx.GetValue();
         int caret = GetCaretFromPosition(expression, position);
-        var scriptRunner = await CreateScriptRunner();
+        var data = await _memoryDiff.OriginalEditor.GetValue();
+        var powerCard = CreatePowerCard(YamlConvert.DeserializeObject<JObject>(data));
+        var scriptRunner = await CreateScriptRunner(powerCard);
         var completionItems = await scriptRunner.GetCompletionItemsAsync(expression, caret, CancellationToken.None);
         return completionItems.Select(ci => new
         {
@@ -179,7 +246,9 @@
     {
         var expression = await _powerfx.GetValue();
         int caret = GetCaretFromPosition(expression, position);
-        var scriptRunner = await CreateScriptRunner();
+        var data = await _memoryDiff.OriginalEditor.GetValue();
+        var powerCard = CreatePowerCard(YamlConvert.DeserializeObject<JObject>(data));
+        var scriptRunner = await CreateScriptRunner(powerCard);
         var signatureHelp = await scriptRunner.GetSignatureHelpAsync(expression, caret, CancellationToken.None);
         return signatureHelp;
     }
@@ -187,7 +256,7 @@
     [JSInvokable(nameof(OnResize))]
     public async Task OnResize()
     {
-        await _memory.Layout();
+        await _memoryDiff.Layout();
     }
 
     private async Task OnMemoryDidInit(MonacoEditorBase editor)
@@ -200,7 +269,7 @@ viewer:
   name: John Doe
   aadObjectId: '{123123-123123-123123}'
 numbers: [1, 2, 3, 4, 5]
-homeAddress: 
+homeAddress:
   street: 123 electric boogaloo
   city: Funkytown
   state: Florida
@@ -220,7 +289,7 @@ phoneNumbers:
 - type: work
   number: 555-777-1111
 ";
-        await _memory.SetModel(new DiffEditorModel
+        await _memoryDiff.SetModel(new DiffEditorModel
             {
                 Original = await MonacoEditorBase.CreateModel(memory, "yaml"),
                 Modified = await MonacoEditorBase.CreateModel(memory, "yaml")
